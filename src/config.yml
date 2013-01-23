@@ -1,0 +1,11 @@
+disallowedblocks:
+  exampleworld:
+  - '7'
+  - '19'
+disallowedpickups:
+  exampleworld:
+  - '7'
+  - '19'
+pickupdelete: true
+disableendereggteleport: true
+deletewhenplaced: true
