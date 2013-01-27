@@ -53,7 +53,7 @@ public class BlockControlListener implements Listener {
 		Player p = e.getPlayer();
 		List<Integer> disallowedpickups = plugin.getConfig().getIntegerList("disallowedpickups."+e.getPlayer().getWorld().getName());
 		for(Integer disallowedpickup : disallowedpickups) {
-			if(e.getItem().getItemStack().getTypeId() == disallowedpickup && !hasPerms("blockcontrol.pickup", p) && !p.isOp()) {
+			if(e.getItem().getItemStack().getTypeId() == disallowedpickup && !hasPerms("blockcontrol.pickup", p)) {
 				e.setCancelled(true);
 			}
 		}
