@@ -6,6 +6,13 @@ disallowedpickups:
   exampleworld:
   - '7'
   - '19'
+bucket:
+  disablelava: false
+  lavaworld:
+  - world
+  disablewater: false
+  waterworld:
+  - world
 pickupdelete: true
 disableendereggteleport: true
 deletewhenplaced: true

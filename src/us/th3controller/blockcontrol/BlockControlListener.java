@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -55,6 +56,29 @@ public class BlockControlListener implements Listener {
 		for(Integer disallowedpickup : disallowedpickups) {
 			if(e.getItem().getItemStack().getTypeId() == disallowedpickup && !hasPerms("blockcontrol.pickup", p)) {
 				e.setCancelled(true);
+			}
+		}
+	}
+	@EventHandler
+	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+		if(event.getPlayer().getItemInHand().getTypeId() == 327) {
+			Player p = event.getPlayer();
+			List<String> world = plugin.getConfig().getStringList("bucket.lavaworld");
+			for(String bworld : world) {
+				if(event.getBlockClicked().getWorld().getName().equals(bworld) && !hasPerms("blockcontrol.lava", p)) {
+					p.sendMessage(ChatColor.translateAlternateColorCodes('&', this.plugin.message.get("pmsg")));
+					event.setCancelled(true);
+				}
+			}
+		}
+		else if(event.getPlayer().getItemInHand().getTypeId() == 326) {
+			Player p = event.getPlayer();
+			List<String> world = plugin.getConfig().getStringList("bucket.waterworld");
+			for(String bworld : world) {
+				if(event.getBlockClicked().getWorld().getName().equals(bworld) && !hasPerms("blockcontrol.water", p)) {
+					p.sendMessage(ChatColor.translateAlternateColorCodes('&', this.plugin.message.get("pmsg")));
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

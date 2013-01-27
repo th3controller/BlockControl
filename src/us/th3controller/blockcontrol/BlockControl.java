@@ -38,6 +38,12 @@ public class BlockControl extends JavaPlugin {
 		if(this.getConfig().getBoolean("pickupdelete", true)) {
 			getServer().getPluginManager().registerEvents(new PickupListener(this), this);
 		}
+		if(this.getConfig().getBoolean("bucket.disablelava", true)) {
+			bucket.put("lava", "true");
+		}
+		if(this.getConfig().getBoolean("bucket.disablewater", true)) {
+			bucket.put("water", "true");
+		}
 	}
 	public void onDisable() {
 		log.info("[BlockControl] Successfully terminated the plugin!");
