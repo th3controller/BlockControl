@@ -1,6 +1,7 @@
 package us.th3controller.blockcontrol;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -10,6 +11,9 @@ public class BlockControl extends JavaPlugin {
 	
 	Logger log = Logger.getLogger("Minecraft");
 	PluginDescriptionFile pdfile;
+	
+	public HashMap<String, String> message = new HashMap<String, String>();
+	public HashMap<String, String> bucket = new HashMap<String, String>();
 	
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
@@ -26,6 +30,14 @@ public class BlockControl extends JavaPlugin {
 		log.info("[BlockControl] GNU General Public License version 3 (GPLv3)");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
+		message.put("pmsg", this.getConfig().getString("placemessage"));
+		message.put("dmsg", this.getConfig().getString("destroymessage"));
+		if(this.getConfig().getBoolean("disableendereggteleport", true)) {
+			getServer().getPluginManager().registerEvents(new EnderEggListener(this), this);
+		}
+		if(this.getConfig().getBoolean("pickupdelete", true)) {
+			getServer().getPluginManager().registerEvents(new PickupListener(this), this);
+		}
 	}
 	public void onDisable() {
 		log.info("[BlockControl] Successfully terminated the plugin!");

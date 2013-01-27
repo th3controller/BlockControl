@@ -9,3 +9,5 @@ disallowedpickups:
 pickupdelete: true
 disableendereggteleport: true
 deletewhenplaced: true
+placemessage: '&cYou have insufficient permission to place that block.'
+destroymessage: '&cYou have insufficient permission to destroy that block.'
