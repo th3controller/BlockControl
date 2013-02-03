@@ -1,5 +1,6 @@
 package us.th3controller.blockcontrol;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -23,6 +24,26 @@ public class BlockControlListener implements Listener {
 	private boolean hasPerms(String perm, Player p) {
 		return p.hasPermission(perm);
 	}
+	private void chatmessage(Player p, String msg) {
+		p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+	}
+	/**
+	 * metricCounter sends data to MCStats whenever it is used.
+	 */
+	public void metricCounter() {
+		try {
+			Metrics metrics = new Metrics(plugin);
+			metrics.addCustomData(new Metrics.Plotter("Attempts to destroy or place a block") {
+				@Override
+				public int getValue() {
+					return 1;
+				}
+			});
+			metrics.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	@EventHandler
 	public void StopBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
@@ -30,7 +51,13 @@ public class BlockControlListener implements Listener {
 		for(Integer disallowedblock : disallowedblocks) {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.destroy", p)) {
 				e.setCancelled(true);
-				p.sendMessage(ChatColor.translateAlternateColorCodes('&', this.plugin.message.get("dmsg")));
+				chatmessage(p, this.plugin.message.get("dmsg"));
+				metricCounter();
+			}
+			else if(hasPerms("blockcontrol.denydestroy."+e.getBlock().getTypeId(), p)) {
+				e.setCancelled(true);
+				chatmessage(p, this.plugin.message.get("dmsg"));
+				metricCounter();
 			}
 		}
 	}
@@ -42,10 +69,16 @@ public class BlockControlListener implements Listener {
 		for(Integer disallowedblock : disallowedblocks) {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.place", p)) {
 				e.setCancelled(true);
-				p.sendMessage(ChatColor.translateAlternateColorCodes('&', this.plugin.message.get("pmsg")));
+				chatmessage(p, this.plugin.message.get("pmsg"));
+				metricCounter();
 				if(plugin.getConfig().getBoolean("deletewhenplaced", true)) {
 					inventory.remove(Material.getMaterial(disallowedblock));
 				}
+			}
+			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p)) {
+				e.setCancelled(true);
+				chatmessage(p, this.plugin.message.get("pmsg"));
+				metricCounter();
 			}
 		}
 	}
@@ -66,7 +99,7 @@ public class BlockControlListener implements Listener {
 			List<String> world = plugin.getConfig().getStringList("bucket.lavaworld");
 			for(String bworld : world) {
 				if(event.getBlockClicked().getWorld().getName().equals(bworld) && !hasPerms("blockcontrol.lava", p)) {
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', this.plugin.message.get("pmsg")));
+					chatmessage(p, this.plugin.message.get("pmsg"));
 					event.setCancelled(true);
 				}
 			}
@@ -76,7 +109,7 @@ public class BlockControlListener implements Listener {
 			List<String> world = plugin.getConfig().getStringList("bucket.waterworld");
 			for(String bworld : world) {
 				if(event.getBlockClicked().getWorld().getName().equals(bworld) && !hasPerms("blockcontrol.water", p)) {
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', this.plugin.message.get("pmsg")));
+					chatmessage(p, this.plugin.message.get("pmsg"));
 					event.setCancelled(true);
 				}
 			}
