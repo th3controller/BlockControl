@@ -1,6 +1,5 @@
 package us.th3controller.blockcontrol;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -27,23 +26,6 @@ public class BlockControlListener implements Listener {
 	private void chatmessage(Player p, String msg) {
 		p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	}
-	/**
-	 * metricCounter sends data to MCStats whenever it is used.
-	 */
-	public void metricCounter() {
-		try {
-			Metrics metrics = new Metrics(plugin);
-			metrics.addCustomData(new Metrics.Plotter("Attempts to destroy or place a block") {
-				@Override
-				public int getValue() {
-					return 1;
-				}
-			});
-			metrics.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	@EventHandler
 	public void StopBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
@@ -52,12 +34,10 @@ public class BlockControlListener implements Listener {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.destroy", p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("dmsg"));
-				metricCounter();
 			}
 			else if(hasPerms("blockcontrol.denydestroy."+e.getBlock().getTypeId(), p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("dmsg"));
-				metricCounter();
 			}
 		}
 	}
@@ -70,7 +50,6 @@ public class BlockControlListener implements Listener {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.place", p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
-				metricCounter();
 				if(plugin.getConfig().getBoolean("deletewhenplaced", true)) {
 					inventory.remove(Material.getMaterial(disallowedblock));
 				}
@@ -78,7 +57,6 @@ public class BlockControlListener implements Listener {
 			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
-				metricCounter();
 			}
 		}
 	}
