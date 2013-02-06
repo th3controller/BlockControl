@@ -35,7 +35,7 @@ public class BlockControlListener implements Listener {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("dmsg"));
 			}
-			else if(hasPerms("blockcontrol.denydestroy."+e.getBlock().getTypeId(), p)) {
+			else if(hasPerms("blockcontrol.denydestroy."+e.getBlock().getTypeId(), p) && !p.isOp()) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("dmsg"));
 			}
@@ -54,7 +54,7 @@ public class BlockControlListener implements Listener {
 					inventory.remove(Material.getMaterial(disallowedblock));
 				}
 			}
-			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p)) {
+			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p) && !p.isOp()) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
 			}
