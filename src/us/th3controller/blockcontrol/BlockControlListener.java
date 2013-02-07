@@ -40,6 +40,13 @@ public class BlockControlListener implements Listener {
 				chatmessage(p, this.plugin.message.get("dmsg"));
 			}
 		}
+		List<String> disallowedworlds = plugin.getConfig().getStringList("disallowedworlds");
+		for(String disallowedworld : disallowedworlds) {
+			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world"+p.getWorld().getName(), p)) {
+				e.setCancelled(true);
+				chatmessage(p, this.plugin.message.get("dmsg"));
+			}
+		}
 	}
 	@EventHandler
 	public void StopBlockPlace(BlockPlaceEvent e) {
@@ -55,6 +62,13 @@ public class BlockControlListener implements Listener {
 				}
 			}
 			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p) && !p.isOp()) {
+				e.setCancelled(true);
+				chatmessage(p, this.plugin.message.get("pmsg"));
+			}
+		}
+		List<String> disallowedworlds = plugin.getConfig().getStringList("disallowedworlds");
+		for(String disallowedworld : disallowedworlds) {
+			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world"+p.getWorld().getName(), p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
 			}

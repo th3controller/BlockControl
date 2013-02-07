@@ -13,6 +13,8 @@ bucket:
   disablewater: false
   waterworld:
   - world
+disallowedworlds:
+- exampleworld
 pickupdelete: true
 disableendereggteleport: true
 deletewhenplaced: true
