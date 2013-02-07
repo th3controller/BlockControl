@@ -42,7 +42,7 @@ public class BlockControlListener implements Listener {
 		}
 		List<String> disallowedworlds = plugin.getConfig().getStringList("disallowedworlds");
 		for(String disallowedworld : disallowedworlds) {
-			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world"+p.getWorld().getName(), p)) {
+			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world."+p.getWorld().getName(), p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("dmsg"));
 			}
@@ -68,7 +68,7 @@ public class BlockControlListener implements Listener {
 		}
 		List<String> disallowedworlds = plugin.getConfig().getStringList("disallowedworlds");
 		for(String disallowedworld : disallowedworlds) {
-			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world"+p.getWorld().getName(), p)) {
+			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world."+p.getWorld().getName(), p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
 			}
