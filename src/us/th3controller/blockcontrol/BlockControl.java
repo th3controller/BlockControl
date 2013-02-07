@@ -1,5 +1,6 @@
 package us.th3controller.blockcontrol;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -18,19 +19,14 @@ public class BlockControl extends JavaPlugin {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
 		pdfile = getDescription();
-		try {
-		    Metrics metrics = new Metrics(this);
-		    metrics.start();
-		} catch (IOException e) {
-		    // Failed to submit the stats :-(
-			log.warning("[BlockControl] Could not connect to metrics!");
+		File folder = new File("plugins/BlockControl");
+		if(!folder.exists()){
+			folder.mkdir();
 		}
-		log.info("[BlockControl] Successfully initiated the plugin!");
-		log.info("[BlockControl] Running version "+pdfile.getVersion());
-		log.info("[BlockControl] GNU General Public License version 3 (GPLv3)");
-		getServer().getScheduler().runTaskAsynchronously(this, new UpdateCheck(this));
-		getConfig().options().copyDefaults(true);
-		saveConfig();
+		File file = new File("plugins/BlockControl", "config.yml");
+		if (!file.exists()) {
+			this.saveResource("config.yml", true);
+		}
 		message.put("pmsg", this.getConfig().getString("placemessage"));
 		message.put("dmsg", this.getConfig().getString("destroymessage"));
 		if(this.getConfig().getBoolean("disableendereggteleport", true)) {
@@ -44,6 +40,19 @@ public class BlockControl extends JavaPlugin {
 		}
 		if(this.getConfig().getBoolean("bucket.disablewater", true)) {
 			bucket.put("water", "true");
+		}
+		try {
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
+			log.warning("[BlockControl] Could not connect to metrics!");
+		}
+		log.info("[BlockControl] Successfully initiated the plugin!");
+		log.info("[BlockControl] Running version "+pdfile.getVersion());
+		log.info("[BlockControl] GNU General Public License version 3 (GPLv3)");
+		if(this.getConfig().getBoolean("checkforupdates", true)) {
+			getServer().getScheduler().runTaskAsynchronously(this, new UpdateCheck(this));
 		}
 	}
 	public void onDisable() {

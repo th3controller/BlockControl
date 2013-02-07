@@ -1,11 +1,14 @@
+#Disallowed blocks that players cannot place or destroy
 disallowedblocks:
   exampleworld:
   - '7'
   - '19'
+#Disallowed items that cannot be picked up
 disallowedpickups:
   exampleworld:
   - '7'
   - '19'
+#If true it disables lava/water in the listed worlds
 bucket:
   disablelava: false
   lavaworld:
@@ -13,10 +16,18 @@ bucket:
   disablewater: false
   waterworld:
   - world
+#You cannot place or destroy anything in the worlds listed
+#Use permissions for specific groups/people that you want to be able to build
 disallowedworlds:
 - exampleworld
+#If true it deletes the disallowed pickup
 pickupdelete: true
+#If true it disables the ender egg from moving
 disableendereggteleport: true
+#If true it would delete the block on hand if it is disabled
 deletewhenplaced: true
+#If true then BlockControl would check for updates. It will not download updates
+checkforupdates: true
+#Messages to be shown when you have performed an action
 placemessage: '&cYou have insufficient permission to place that block.'
 destroymessage: '&cYou have insufficient permission to destroy that block.'
