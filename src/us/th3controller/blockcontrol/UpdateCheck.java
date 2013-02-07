@@ -32,6 +32,9 @@ public class UpdateCheck implements Runnable {
 					plugin.log.info("[BlockControl] Latest version is available now on BukkitDev!");
 					plugin.log.info("[BlockControl] http://goo.gl/pc6D9");
 				}
+				else if(newVer == currentVer) {
+					plugin.log.info("[BlockControl] Up-to-date!");
+				}
 			}
 			
 		} catch (IOException e) {
