@@ -16,6 +16,9 @@ public class BlockControl extends JavaPlugin {
 	public HashMap<String, String> message = new HashMap<String, String>();
 	public HashMap<String, String> bucket = new HashMap<String, String>();
 	
+	public void lm(String msg){
+		log.info("[BlockControl] " + msg);
+	}
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
 		pdfile = getDescription();
@@ -48,15 +51,15 @@ public class BlockControl extends JavaPlugin {
 		    // Failed to submit the stats :-(
 			log.warning("[BlockControl] Could not connect to metrics!");
 		}
-		log.info("[BlockControl] Successfully initiated the plugin!");
-		log.info("[BlockControl] Running version "+pdfile.getVersion());
-		log.info("[BlockControl] GNU General Public License version 3 (GPLv3)");
+		lm("Successfully initiated the plugin!");
+		lm("Running version "+pdfile.getVersion());
+		lm("GNU General Public License version 3 (GPLv3)");
 		if(this.getConfig().getBoolean("checkforupdates", true)) {
 			getServer().getScheduler().runTaskAsynchronously(this, new UpdateCheck(this));
 		}
 	}
 	public void onDisable() {
-		log.info("[BlockControl] Successfully terminated the plugin!");
+		lm("Successfully terminated the plugin!");
 	}
 	public double parseVersion(String toParse) {
 		String[] parts = toParse.split("\\.");
