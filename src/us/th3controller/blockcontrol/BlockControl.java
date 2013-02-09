@@ -2,6 +2,7 @@ package us.th3controller.blockcontrol;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -15,7 +16,12 @@ public class BlockControl extends JavaPlugin {
 	
 	public HashMap<String, String> message = new HashMap<String, String>();
 	public HashMap<String, String> bucket = new HashMap<String, String>();
+	public ArrayList<Integer> disblock = new ArrayList<Integer>();
 	
+	/**
+	 * Shows a message in the console with a prefix tag
+	 * @param msg The message to be displayed on the console
+	 */
 	public void lm(String msg){
 		log.info("[BlockControl] " + msg);
 	}
