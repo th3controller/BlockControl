@@ -31,7 +31,7 @@ public class BlockControl extends JavaPlugin {
 		pdfile = getDescription();
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-		boolConfig();
+		cacheConfig();
 		try {
 		    Metrics metrics = new Metrics(this);
 		    metrics.start();
@@ -49,7 +49,7 @@ public class BlockControl extends JavaPlugin {
 	public void onDisable() {
 		lm("Successfully terminated the plugin!");
 	}
-	public void boolConfig() {
+	public void cacheConfig() {
 		//Cached messages
 		message.put("pmsg", getConfig().getString("placemessage"));
 		message.put("dmsg", getConfig().getString("destroymessage"));
