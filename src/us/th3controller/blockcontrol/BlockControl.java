@@ -1,7 +1,9 @@
 package us.th3controller.blockcontrol;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -14,6 +16,9 @@ public class BlockControl extends JavaPlugin {
 	
 	public HashMap<String, String> message = new HashMap<String, String>();
 	public HashMap<String, String> bool = new HashMap<String, String>();
+	public ArrayList<String> disallowedworld = new ArrayList<String>();
+	public ArrayList<String> lavaworld = new ArrayList<String>();
+	public ArrayList<String> waterworld = new ArrayList<String>();
 	
 	/**
 	 * Shows a message in the console with a prefix tag
@@ -56,11 +61,19 @@ public class BlockControl extends JavaPlugin {
 		if(getConfig().getBoolean("pickupdelete", true)) {
 			getServer().getPluginManager().registerEvents(new PickupListener(this), this);
 		}
+		//Cached list
+		List<String> disallowedworlds = getConfig().getStringList("disallowedworlds");
+		disallowedworld.addAll(disallowedworlds);
+		List<String> lavaworlds = getConfig().getStringList("bucket.lavaworld");
+		lavaworld.addAll(lavaworlds);
+		List<String> waterworlds = getConfig().getStringList("bucket.waterworld");
+		waterworld.addAll(waterworlds);
 		//Cached booleans
+		if(getConfig().getBoolean("deletewhenplaced", true)) {
+			bool.put("deleteplaced", "true");
+		}
 		if(getConfig().getBoolean("dropdelete", true)) {
 			bool.put("dropdelete", "true");
-		} else {
-			bool.put("dropdelete", "false");
 		}
 	}
 	public double parseVersion(String toParse) {

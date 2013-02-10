@@ -52,7 +52,7 @@ public class BlockControlListener implements Listener {
 				chatmessage(p, this.plugin.message.get("dmsg"));
 			}
 		}
-		List<String> disallowedworlds = plugin.getConfig().getStringList("disallowedworlds");
+		List<String> disallowedworlds = plugin.disallowedworld;
 		for(String disallowedworld : disallowedworlds) {
 			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world."+p.getWorld().getName(), p)) {
 				e.setCancelled(true);
@@ -69,16 +69,19 @@ public class BlockControlListener implements Listener {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.place", p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
-				if(plugin.getConfig().getBoolean("deletewhenplaced", true)) {
+				if(plugin.bool.get("deleteplaced").contains("true")) {
 					inventory.remove(Material.getMaterial(disallowedblock));
 				}
 			}
 			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p) && !p.isOp()) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
+				if(plugin.bool.get("deleteplaced").contains("true")) {
+					inventory.remove(Material.getMaterial(disallowedblock));
+				}
 			}
 		}
-		List<String> disallowedworlds = plugin.getConfig().getStringList("disallowedworlds");
+		List<String> disallowedworlds = plugin.disallowedworld;
 		for(String disallowedworld : disallowedworlds) {
 			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world."+p.getWorld().getName(), p)) {
 				e.setCancelled(true);
@@ -114,7 +117,7 @@ public class BlockControlListener implements Listener {
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 		if(event.getPlayer().getItemInHand().getTypeId() == 327) {
 			Player p = event.getPlayer();
-			List<String> world = plugin.getConfig().getStringList("bucket.lavaworld");
+			List<String> world = plugin.lavaworld;
 			for(String bworld : world) {
 				if(event.getBlockClicked().getWorld().getName().equals(bworld) && !hasPerms("blockcontrol.lava", p)) {
 					chatmessage(p, this.plugin.message.get("pmsg"));
@@ -124,7 +127,7 @@ public class BlockControlListener implements Listener {
 		}
 		else if(event.getPlayer().getItemInHand().getTypeId() == 326) {
 			Player p = event.getPlayer();
-			List<String> world = plugin.getConfig().getStringList("bucket.waterworld");
+			List<String> world = plugin.waterworld;
 			for(String bworld : world) {
 				if(event.getBlockClicked().getWorld().getName().equals(bworld) && !hasPerms("blockcontrol.water", p)) {
 					chatmessage(p, this.plugin.message.get("pmsg"));
