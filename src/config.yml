@@ -8,12 +8,15 @@ disallowedpickups:
   exampleworld:
   - '7'
   - '19'
-#If true it disables lava/water in the listed worlds
+#Disallowed item tiles that cannot be dropped from the inventory
+disalloweddrops:
+  exampleworld:
+  - '7'
+  - '19'
+#Lavaworld is where lava buckets are disabled and same goes for waterworld
 bucket:
-  disablelava: false
   lavaworld:
   - world
-  disablewater: false
   waterworld:
   - world
 #You cannot place or destroy anything in the worlds listed
@@ -22,6 +25,9 @@ disallowedworlds:
 - exampleworld
 #If true it deletes the disallowed pickup
 pickupdelete: true
+#If true when a player attempts to drop an item from the disalloweddrop list
+#The item drop would then be deleted instead of being put back in the inventory
+dropdelete: true
 #If true it disables the ender egg from moving
 disableendereggteleport: true
 #If true it would delete the block on hand if it is disabled

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -20,16 +21,27 @@ public class BlockControlListener implements Listener {
 	public BlockControlListener(BlockControl plugin) {
 		this.plugin = plugin;
 	}
+	/**
+	 * Checks for permissions
+	 * @param perm The permission node to be used
+	 * @param p The player being checked
+	 * @return If has permission returns true, else false
+	 */
 	private boolean hasPerms(String perm, Player p) {
 		return p.hasPermission(perm);
 	}
+	/**
+	 * Translated colored chat
+	 * @param p Player to be involved in the chat
+	 * @param msg Message to be translated to display colors
+	 */
 	private void chatmessage(Player p, String msg) {
 		p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	}
 	@EventHandler
 	public void StopBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
-		List<Integer> disallowedblocks = plugin.getConfig().getIntegerList("disallowedblocks."+e.getPlayer().getWorld().getName());
+		List<Integer> disallowedblocks = plugin.getConfig().getIntegerList("disallowedblocks."+p.getWorld().getName());
 		for(Integer disallowedblock : disallowedblocks) {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.destroy", p)) {
 				e.setCancelled(true);
@@ -52,7 +64,7 @@ public class BlockControlListener implements Listener {
 	public void StopBlockPlace(BlockPlaceEvent e) {
 		Player p = e.getPlayer();
 		PlayerInventory inventory = p.getInventory();
-		List<Integer> disallowedblocks = plugin.getConfig().getIntegerList("disallowedblocks."+e.getPlayer().getWorld().getName());
+		List<Integer> disallowedblocks = plugin.getConfig().getIntegerList("disallowedblocks."+p.getWorld().getName());
 		for(Integer disallowedblock : disallowedblocks) {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.place", p)) {
 				e.setCancelled(true);
@@ -77,10 +89,24 @@ public class BlockControlListener implements Listener {
 	@EventHandler
 	public void PlayerPickUp(PlayerPickupItemEvent e) {
 		Player p = e.getPlayer();
-		List<Integer> disallowedpickups = plugin.getConfig().getIntegerList("disallowedpickups."+e.getPlayer().getWorld().getName());
+		List<Integer> disallowedpickups = plugin.getConfig().getIntegerList("disallowedpickups."+p.getWorld().getName());
 		for(Integer disallowedpickup : disallowedpickups) {
 			if(e.getItem().getItemStack().getTypeId() == disallowedpickup && !hasPerms("blockcontrol.pickup", p)) {
 				e.setCancelled(true);
+			}
+		}
+	}
+	@EventHandler
+	public void PlayerDrop(PlayerDropItemEvent event) {
+		Player p = event.getPlayer();
+		List<Integer> disalloweddrops = plugin.getConfig().getIntegerList("disalloweddrops."+p.getWorld().getName());
+		for(Integer disalloweddrop : disalloweddrops) {
+			if(event.getItemDrop().equals(disalloweddrop)) {
+				if(plugin.bool.get("dropdelete").contains("true")) {
+					event.getItemDrop().remove();
+				} else {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 package us.th3controller.blockcontrol;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -14,7 +13,7 @@ public class BlockControl extends JavaPlugin {
 	PluginDescriptionFile pdfile;
 	
 	public HashMap<String, String> message = new HashMap<String, String>();
-	public HashMap<String, String> bucket = new HashMap<String, String>();
+	public HashMap<String, String> bool = new HashMap<String, String>();
 	
 	/**
 	 * Shows a message in the console with a prefix tag
@@ -26,28 +25,9 @@ public class BlockControl extends JavaPlugin {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
 		pdfile = getDescription();
-		File folder = new File("plugins/BlockControl");
-		if(!folder.exists()){
-			folder.mkdir();
-		}
-		File file = new File("plugins/BlockControl", "config.yml");
-		if (!file.exists()) {
-			this.saveResource("config.yml", true);
-		}
-		message.put("pmsg", this.getConfig().getString("placemessage"));
-		message.put("dmsg", this.getConfig().getString("destroymessage"));
-		if(this.getConfig().getBoolean("disableendereggteleport", true)) {
-			getServer().getPluginManager().registerEvents(new EnderEggListener(this), this);
-		}
-		if(this.getConfig().getBoolean("pickupdelete", true)) {
-			getServer().getPluginManager().registerEvents(new PickupListener(this), this);
-		}
-		if(this.getConfig().getBoolean("bucket.disablelava", true)) {
-			bucket.put("lava", "true");
-		}
-		if(this.getConfig().getBoolean("bucket.disablewater", true)) {
-			bucket.put("water", "true");
-		}
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+		boolConfig();
 		try {
 		    Metrics metrics = new Metrics(this);
 		    metrics.start();
@@ -58,12 +38,30 @@ public class BlockControl extends JavaPlugin {
 		lm("Successfully initiated the plugin!");
 		lm("Running version "+pdfile.getVersion());
 		lm("GNU General Public License version 3 (GPLv3)");
-		if(this.getConfig().getBoolean("checkforupdates", true)) {
+		if(getConfig().getBoolean("checkforupdates", true)) {
 			getServer().getScheduler().runTaskAsynchronously(this, new UpdateCheck(this));
 		}
 	}
 	public void onDisable() {
 		lm("Successfully terminated the plugin!");
+	}
+	public void boolConfig() {
+		//Cached messages
+		message.put("pmsg", getConfig().getString("placemessage"));
+		message.put("dmsg", getConfig().getString("destroymessage"));
+		//Separate listeners, implemented to reduce event checks
+		if(getConfig().getBoolean("disableendereggteleport", true)) {
+			getServer().getPluginManager().registerEvents(new EnderEggListener(this), this);
+		}
+		if(getConfig().getBoolean("pickupdelete", true)) {
+			getServer().getPluginManager().registerEvents(new PickupListener(this), this);
+		}
+		//Cached booleans
+		if(getConfig().getBoolean("dropdelete", true)) {
+			bool.put("dropdelete", "true");
+		} else {
+			bool.put("dropdelete", "false");
+		}
 	}
 	public double parseVersion(String toParse) {
 		String[] parts = toParse.split("\\.");
