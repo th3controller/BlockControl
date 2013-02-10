@@ -15,7 +15,6 @@ public class BlockControl extends JavaPlugin {
 	PluginDescriptionFile pdfile;
 	
 	public HashMap<String, String> message = new HashMap<String, String>();
-	public HashMap<String, String> bool = new HashMap<String, String>();
 	public ArrayList<String> disallowedworld = new ArrayList<String>();
 	public ArrayList<String> lavaworld = new ArrayList<String>();
 	public ArrayList<String> waterworld = new ArrayList<String>();
@@ -68,15 +67,6 @@ public class BlockControl extends JavaPlugin {
 		lavaworld.addAll(lavaworlds);
 		List<String> waterworlds = getConfig().getStringList("bucket.waterworld");
 		waterworld.addAll(waterworlds);
-		//Cached booleans
-		if(getConfig().getBoolean("deletewhenplaced", true)) {
-			bool.put("deleteplaced", "true");
-		} else {
-			bool.put("deleteplaced", "false");
-		}
-		if(getConfig().getBoolean("dropdelete", true)) {
-			bool.put("dropdelete", "true");
-		}
 	}
 	public double parseVersion(String toParse) {
 		String[] parts = toParse.split("\\.");
