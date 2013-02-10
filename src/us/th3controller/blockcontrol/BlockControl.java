@@ -71,6 +71,8 @@ public class BlockControl extends JavaPlugin {
 		//Cached booleans
 		if(getConfig().getBoolean("deletewhenplaced", true)) {
 			bool.put("deleteplaced", "true");
+		} else {
+			bool.put("deleteplaced", "false");
 		}
 		if(getConfig().getBoolean("dropdelete", true)) {
 			bool.put("dropdelete", "true");

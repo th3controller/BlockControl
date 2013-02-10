@@ -69,14 +69,14 @@ public class BlockControlListener implements Listener {
 			if(e.getBlock().getTypeId() == disallowedblock && !hasPerms("blockcontrol.place", p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
-				if(plugin.bool.get("deleteplaced").contains("true")) {
+				if(plugin.getConfig().getBoolean("deletewhenplaced", true)) {
 					inventory.remove(Material.getMaterial(disallowedblock));
 				}
 			}
 			else if(hasPerms("blockcontrol.denyplace."+e.getBlock().getTypeId(), p) && !p.isOp()) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
-				if(plugin.bool.get("deleteplaced").contains("true")) {
+				if(plugin.getConfig().getBoolean("deletewhenplaced", true)) {
 					inventory.remove(Material.getMaterial(disallowedblock));
 				}
 			}
@@ -86,6 +86,9 @@ public class BlockControlListener implements Listener {
 			if(e.getBlock().getWorld().getName().contains(disallowedworld) && !hasPerms("blockcontrol.world."+p.getWorld().getName(), p)) {
 				e.setCancelled(true);
 				chatmessage(p, this.plugin.message.get("pmsg"));
+				if(plugin.getConfig().getBoolean("deletewhenplaced", true)) {
+					inventory.remove(p.getItemInHand());
+				}
 			}
 		}
 	}
@@ -104,8 +107,8 @@ public class BlockControlListener implements Listener {
 		Player p = event.getPlayer();
 		List<Integer> disalloweddrops = plugin.getConfig().getIntegerList("disalloweddrops."+p.getWorld().getName());
 		for(Integer disalloweddrop : disalloweddrops) {
-			if(event.getItemDrop().equals(disalloweddrop)) {
-				if(plugin.bool.get("dropdelete").contains("true")) {
+			if(event.getItemDrop().getItemStack().getTypeId() == disalloweddrop) {
+				if(plugin.getConfig().getBoolean("dropdelete", true)) {
 					event.getItemDrop().remove();
 				} else {
 					event.setCancelled(true);
