@@ -10,13 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class BlockControlListener implements Listener {
@@ -95,17 +94,12 @@ public class BlockControlListener implements Listener {
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGH)
-	public void EnderEgg(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		Action act = e.getAction();
-		Block block = e.getClickedBlock();
+	public void EnderEgg(BlockFromToEvent e) {
+		Block block = e.getBlock();
 		FileConfiguration config = plugin.getConfig();
-		if(config.getBoolean("worlds."+e.getPlayer().getWorld().getName()+".enderegg-teleport-disable")) {
-			if((act == Action.RIGHT_CLICK_BLOCK || act == Action.LEFT_CLICK_BLOCK) && (block != null)) {
-				if(block.getTypeId() == 122 && !hasPerms("dragonegg", p)) {
-					e.setCancelled(true);
-					p.sendMessage(ChatColor.RED+"You have to use pistons to obtain the dragon egg!");
-				}
+		if(block.getTypeId() == 122) {
+			if(config.getBoolean("worlds."+e.getBlock().getWorld().getName()+".enderegg-teleport-disable")) {
+				e.setCancelled(true);
 			}
 		}
 	}
