@@ -1,11 +1,14 @@
 package us.th3controller.blockcontrol;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,24 +17,20 @@ public class BlockControl extends JavaPlugin {
 	Logger log = Logger.getLogger("Minecraft");
 	PluginDescriptionFile pdfile;
 	
-	public HashMap<String, String> message = new HashMap<String, String>();
-	public ArrayList<String> disallowedworld = new ArrayList<String>();
-	public ArrayList<String> lavaworld = new ArrayList<String>();
-	public ArrayList<String> waterworld = new ArrayList<String>();
-	
 	/**
 	 * Shows a message in the console with a prefix tag
 	 * @param msg The message to be displayed on the console
 	 */
 	public void lm(String msg){
-		log.info("[BlockControl] " + msg);
+		log.info("[BlockControl] "+msg);
 	}
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
 		pdfile = getDescription();
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-		cacheConfig();
+		File file = new File("plugins/BlockControl", "config.yml");
+		if(!file.exists()) {
+			this.saveResource("config.yml", true);
+		}
 		try {
 		    Metrics metrics = new Metrics(this);
 		    metrics.start();
@@ -42,6 +41,7 @@ public class BlockControl extends JavaPlugin {
 		lm("Successfully initiated the plugin!");
 		lm("Running version "+pdfile.getVersion());
 		lm("GNU General Public License version 3 (GPLv3)");
+		getCommand("blockcontrol").setExecutor(this);
 		if(getConfig().getBoolean("checkforupdates", true)) {
 			getServer().getScheduler().runTaskAsynchronously(this, new UpdateCheck(this));
 		}
@@ -49,24 +49,39 @@ public class BlockControl extends JavaPlugin {
 	public void onDisable() {
 		lm("Successfully terminated the plugin!");
 	}
-	public void cacheConfig() {
-		//Cached messages
-		message.put("pmsg", getConfig().getString("placemessage"));
-		message.put("dmsg", getConfig().getString("destroymessage"));
-		//Separate listeners, implemented to reduce event checks
-		if(getConfig().getBoolean("disableendereggteleport", true)) {
-			getServer().getPluginManager().registerEvents(new EnderEggListener(this), this);
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(!(sender instanceof Player) || (sender.hasPermission("blockcontrol.command"))) {
+			if(args.length == 2) {
+				if(args[0].equalsIgnoreCase("create")) {
+					getConfig().set("worlds."+args[1]+".no-build", false);
+					getConfig().set("worlds."+args[1]+".block-place", Arrays.asList("7", "19"));
+					getConfig().set("worlds."+args[1]+".block-destroy", Arrays.asList("7", "19"));
+					getConfig().set("worlds."+args[1]+".pickup", Arrays.asList("7", "19"));
+					getConfig().set("worlds."+args[1]+".item-drop", Arrays.asList("7", "19"));
+					getConfig().set("worlds."+args[1]+".lava-bucket-place", false);
+					getConfig().set("worlds."+args[1]+".water-bucket-place", false);
+					getConfig().set("worlds."+args[1]+".lava-bucket-fill", false);
+					getConfig().set("worlds."+args[1]+".water-bucket-fill", false);
+					getConfig().set("worlds."+args[1]+".delete-disabled-pickup", false);
+					getConfig().set("worlds."+args[1]+".delete-disabled-drop", false);
+					getConfig().set("worlds."+args[1]+".delete-disabled-place", false);
+					getConfig().set("worlds."+args[1]+".enderegg-teleport-disable", false);
+					getConfig().set("worlds."+args[1]+".place-message", "&cYou have insufficient permission to place that block.");
+					getConfig().set("worlds."+args[1]+".destroy-message", "&cYou have insufficient permission to destroy that block.");
+					saveConfig();
+					sender.sendMessage(ChatColor.RED+"World name is case sensitive! Make sure you typed your world name correctly!");
+				}
+				return true;
+			}
+			if(args.length == 1) {
+				if(args[0].equalsIgnoreCase("reload")) {
+					reloadConfig();
+					sender.sendMessage(ChatColor.GREEN+"BlockControl successfully reloaded!");
+				}
+				return true;
+			}
 		}
-		if(getConfig().getBoolean("pickupdelete", true)) {
-			getServer().getPluginManager().registerEvents(new PickupListener(this), this);
-		}
-		//Cached list
-		List<String> disallowedworlds = getConfig().getStringList("disallowedworlds");
-		disallowedworld.addAll(disallowedworlds);
-		List<String> lavaworlds = getConfig().getStringList("bucket.lavaworld");
-		lavaworld.addAll(lavaworlds);
-		List<String> waterworlds = getConfig().getStringList("bucket.waterworld");
-		waterworld.addAll(waterworlds);
+		return false;
 	}
 	public double parseVersion(String toParse) {
 		String[] parts = toParse.split("\\.");

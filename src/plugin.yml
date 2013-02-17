@@ -1,4 +1,9 @@
 name: BlockControl
-version: 1.2.6
+version: 1.3.0
 main: us.th3controller.blockcontrol.BlockControl
 author: th3controller
+commands:
+   blockcontrol:
+      description: BlockControl commands
+      usage: /<command>
+      aliases: bc
