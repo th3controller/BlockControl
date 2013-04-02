@@ -63,12 +63,15 @@ public class BlockControl extends JavaPlugin {
 					getConfig().set("worlds."+args[1]+".lava-bucket-fill", false);
 					getConfig().set("worlds."+args[1]+".water-bucket-fill", false);
 					getConfig().set("worlds."+args[1]+".delete-disabled-pickup", false);
+					getConfig().set("worlds."+args[1]+".disabled-pickup-message", "&cYou cannot pickup this item.");
 					getConfig().set("worlds."+args[1]+".delete-disabled-drop", false);
+					getConfig().set("worlds."+args[1]+".disabled-drop-message", "&cYou cannot drop this item.");
 					getConfig().set("worlds."+args[1]+".delete-disabled-place", false);
 					getConfig().set("worlds."+args[1]+".enderegg-teleport-disable", false);
 					getConfig().set("worlds."+args[1]+".place-message", "&cYou have insufficient permission to place that block.");
 					getConfig().set("worlds."+args[1]+".destroy-message", "&cYou have insufficient permission to destroy that block.");
 					saveConfig();
+					reloadConfig();
 					sender.sendMessage(ChatColor.RED+"World name is case sensitive! Make sure you typed your world name correctly!");
 				}
 				return true;

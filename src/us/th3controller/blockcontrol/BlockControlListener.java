@@ -58,6 +58,11 @@ public class BlockControlListener implements Listener {
 				chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".destroy-message"));
 			}
 		}
+	}
+	@EventHandler
+	public void BlockBreakWorld(BlockBreakEvent event) {
+		Player player = event.getPlayer();
+		FileConfiguration config = plugin.getConfig();
 		if(config.getBoolean("worlds."+player.getWorld().getName()+".no-build") && !hasPerms("world."+player.getWorld().getName(), player)) {
 			event.setCancelled(true);
 			chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".destroy-message"));
@@ -85,6 +90,11 @@ public class BlockControlListener implements Listener {
 				}
 			}
 		}
+	}
+	@EventHandler
+	public void BlockPlaceWorld(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		FileConfiguration config = plugin.getConfig();
 		if(config.getBoolean("worlds."+player.getWorld().getName()+".no-build") && !hasPerms("world."+player.getWorld().getName(), player)) {
 			event.setCancelled(true);
 			chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".place-message"));
@@ -148,13 +158,23 @@ public class BlockControlListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void PlayerPickUp(PlayerPickupItemEvent e) {
 		Player player = e.getPlayer();
-		List<Integer> pickups = plugin.getConfig().getIntegerList("worlds."+player.getWorld().getName()+".pickup");
+		String world = player.getWorld().getName();
+		FileConfiguration config = plugin.getConfig();
+		List<Integer> pickups = config.getIntegerList("worlds."+world+".pickup");
 		for(Integer pickup : pickups) {
 			if(e.getItem().getItemStack().getTypeId() == pickup && !hasPerms("pickup", player)) {
 				e.setCancelled(true);
 				e.getItem().setPickupDelay(20);
-				if(plugin.getConfig().getBoolean("worlds."+player.getWorld().getName()+".delete-disabled-pickup")) {
+				if(config.getBoolean("worlds."+world+".delete-disabled-pickup")) {
 					e.getItem().remove();
+				}
+				if(config.getString("worlds."+world+".disabled-pickup-message") == null) {
+					config.set("worlds."+world+".disabled-pickup-message", "&cYou cannot pickup this item.");
+					plugin.saveConfig();
+					plugin.reloadConfig();
+					player.sendMessage(ChatColor.RED+"You cannot pickup this item.");
+				} else {
+					chatmessage(player, config.getString("worlds."+world+".disabled-pickup-message"));
 				}
 			}
 		}
@@ -162,13 +182,23 @@ public class BlockControlListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void PlayerDrop(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		List<Integer> drops = plugin.getConfig().getIntegerList("worlds."+player.getWorld().getName()+".item-drop");
+		String world = player.getWorld().getName();
+		FileConfiguration config = plugin.getConfig();
+		List<Integer> drops = config.getIntegerList("worlds."+world+".item-drop");
 		for(Integer drop : drops) {
 			if(event.getItemDrop().getItemStack().getTypeId() == drop && !hasPerms("drop", player)) {
-				if(plugin.getConfig().getBoolean("worlds."+player.getWorld().getName()+".delete-disabled-drop")) {
+				if(config.getBoolean("worlds."+world+".delete-disabled-drop")) {
 					event.getItemDrop().remove();
 				} else {
 					event.setCancelled(true);
+				}
+				if(config.getString("worlds."+world+".disabled-drop-message") == null) {
+					config.set("worlds."+world+".disabled-drop-message", "&cYou cannot drop this item.");
+					plugin.saveConfig();
+					plugin.reloadConfig();
+					player.sendMessage(ChatColor.RED+"You cannot drop this item.");
+				} else {
+					chatmessage(player, config.getString("worlds."+world+".disabled-drop-message"));
 				}
 			}
 		}
