@@ -49,13 +49,14 @@ public class BlockControlListener implements Listener {
 		FileConfiguration config = plugin.getConfig();
 		List<Integer> blocklist = config.getIntegerList("worlds."+player.getWorld().getName()+".block-destroy");
 		for(Integer block : blocklist) {
+			String world = player.getWorld().getName();
 			if(getblock.getTypeId() == block && !hasPerms("destroy", player)) {
 				event.setCancelled(true);
-				chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".destroy-message"));
+				chatmessage(player, config.getString("worlds."+world+".destroy-message"));
 			}
 			else if(hasPerms("denydestroy."+getblock.getTypeId(), player) && !player.isOp()) {
 				event.setCancelled(true);
-				chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".destroy-message"));
+				chatmessage(player, config.getString("worlds."+world+".destroy-message"));
 			}
 		}
 	}
@@ -75,17 +76,18 @@ public class BlockControlListener implements Listener {
 		FileConfiguration config = plugin.getConfig();
 		List<Integer> blocklist = config.getIntegerList("worlds."+player.getWorld().getName()+".block-place");
 		for(Integer block : blocklist) {
+			String world = event.getPlayer().getWorld().getName();
 			if(getblock.getTypeId() == block && !hasPerms("place", player)) {
 				event.setCancelled(true);
-				chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".place-message"));
-				if(config.getBoolean("worlds."+player.getWorld().getName()+".delete-disabled-place")) {
+				chatmessage(player, config.getString("worlds."+world+".place-message"));
+				if(config.getBoolean("worlds."+world+".delete-disabled-place")) {
 					player.getInventory().remove(Material.getMaterial(block));
 				}
 			}
 			else if(hasPerms("denyplace."+getblock.getTypeId(), player) && !player.isOp()) {
 				event.setCancelled(true);
-				chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".place-message"));
-				if(config.getBoolean("worlds."+player.getWorld().getName()+".delete-disabled-place")) {
+				chatmessage(player, config.getString("worlds."+world+".place-message"));
+				if(config.getBoolean("worlds."+world+".delete-disabled-place")) {
 					player.getInventory().remove(player.getItemInHand());
 				}
 			}
@@ -100,6 +102,23 @@ public class BlockControlListener implements Listener {
 			chatmessage(player, config.getString("worlds."+player.getWorld().getName()+".place-message"));
 			if(config.getBoolean("worlds."+player.getWorld().getName()+".delete-disabled-place")) {
 				player.getInventory().remove(player.getItemInHand());
+			}
+		}
+	}
+	@EventHandler(priority = EventPriority.HIGH)
+	public void LiquidPhysics(BlockFromToEvent event) {
+		if(event.getBlock().isLiquid()) {
+			String world = event.getBlock().getWorld().getName();
+			Material block = event.getBlock().getType();
+			if(block.equals(Material.STATIONARY_WATER) || block.equals(Material.WATER)) {
+				if(plugin.getConfig().getBoolean("worlds."+world+".disable-water-physics")) {
+					event.setCancelled(true);
+				}
+			}
+			else if(block.equals(Material.STATIONARY_LAVA) || block.equals(Material.LAVA)) {
+				if(plugin.getConfig().getBoolean("worlds."+world+".disable-lava-physics")) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

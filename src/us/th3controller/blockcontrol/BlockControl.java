@@ -53,25 +53,29 @@ public class BlockControl extends JavaPlugin {
 		if(!(sender instanceof Player) || (sender.hasPermission("blockcontrol.command"))) {
 			if(args.length == 2) {
 				if(args[0].equalsIgnoreCase("create")) {
-					getConfig().set("worlds."+args[1]+".no-build", false);
-					getConfig().set("worlds."+args[1]+".block-place", Arrays.asList("7", "19"));
-					getConfig().set("worlds."+args[1]+".block-destroy", Arrays.asList("7", "19"));
-					getConfig().set("worlds."+args[1]+".pickup", Arrays.asList("7", "19"));
-					getConfig().set("worlds."+args[1]+".item-drop", Arrays.asList("7", "19"));
-					getConfig().set("worlds."+args[1]+".lava-bucket-place", false);
-					getConfig().set("worlds."+args[1]+".water-bucket-place", false);
-					getConfig().set("worlds."+args[1]+".lava-bucket-fill", false);
-					getConfig().set("worlds."+args[1]+".water-bucket-fill", false);
-					getConfig().set("worlds."+args[1]+".delete-disabled-pickup", false);
-					getConfig().set("worlds."+args[1]+".disabled-pickup-message", "&cYou cannot pickup this item.");
-					getConfig().set("worlds."+args[1]+".delete-disabled-drop", false);
-					getConfig().set("worlds."+args[1]+".disabled-drop-message", "&cYou cannot drop this item.");
-					getConfig().set("worlds."+args[1]+".delete-disabled-place", false);
-					getConfig().set("worlds."+args[1]+".enderegg-teleport-disable", false);
-					getConfig().set("worlds."+args[1]+".place-message", "&cYou have insufficient permission to place that block.");
-					getConfig().set("worlds."+args[1]+".destroy-message", "&cYou have insufficient permission to destroy that block.");
+					configCreate("worlds."+args[1]+".no-build", false);
+					configCreate("worlds."+args[1]+".block-place", Arrays.asList("7", "19"));
+					configCreate("worlds."+args[1]+".block-destroy", Arrays.asList("7", "19"));
+					configCreate("worlds."+args[1]+".pickup", Arrays.asList("7", "19"));
+					configCreate("worlds."+args[1]+".item-drop", Arrays.asList("7", "19"));
+					configCreate("worlds."+args[1]+".lava-bucket-place", false);
+					configCreate("worlds."+args[1]+".water-bucket-place", false);
+					configCreate("worlds."+args[1]+".lava-bucket-fill", false);
+					configCreate("worlds."+args[1]+".water-bucket-fill", false);
+					configCreate("worlds."+args[1]+".delete-disabled-pickup", false);
+					configCreate("worlds."+args[1]+".disabled-pickup-message", "&cYou cannot pickup this item.");
+					configCreate("worlds."+args[1]+".delete-disabled-drop", false);
+					configCreate("worlds."+args[1]+".disabled-drop-message", "&cYou cannot drop this item.");
+					configCreate("worlds."+args[1]+".delete-disabled-place", false);
+					configCreate("worlds."+args[1]+".enderegg-teleport-disable", false);
+					configCreate("worlds."+args[1]+".place-message", "&cYou have insufficient permission to place that block.");
+					configCreate("worlds."+args[1]+".destroy-message", "&cYou have insufficient permission to destroy that block.");
+					configCreate("worlds."+args[1]+".only-oak-wood", false);
+					configCreate("worlds."+args[1]+".disable-water-physics", false);
+					configCreate("worlds."+args[1]+".disable-lava-physics", false);
 					saveConfig();
 					reloadConfig();
+					sender.sendMessage(ChatColor.GREEN+"Configuration section successfully created!");
 					sender.sendMessage(ChatColor.RED+"World name is case sensitive! Make sure you typed your world name correctly!");
 				}
 				return true;
@@ -85,6 +89,11 @@ public class BlockControl extends JavaPlugin {
 			}
 		}
 		return false;
+	}
+	private void configCreate(String path, Object value) {
+		if(!getConfig().contains(path)) {
+			getConfig().set(path, value);
+		}
 	}
 	public double parseVersion(String toParse) {
 		String[] parts = toParse.split("\\.");
