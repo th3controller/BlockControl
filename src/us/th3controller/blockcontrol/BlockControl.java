@@ -24,6 +24,7 @@ public class BlockControl extends JavaPlugin {
 	public void lm(String msg){
 		log.info("[BlockControl] "+msg);
 	}
+	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
 		pdfile = getDescription();
@@ -46,9 +47,11 @@ public class BlockControl extends JavaPlugin {
 			getServer().getScheduler().runTaskAsynchronously(this, new UpdateCheck(this));
 		}
 	}
+	@Override
 	public void onDisable() {
 		lm("Successfully terminated the plugin!");
 	}
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!(sender instanceof Player) || (sender.hasPermission("blockcontrol.command"))) {
 			if(args.length == 2) {
@@ -70,9 +73,10 @@ public class BlockControl extends JavaPlugin {
 					configCreate("worlds."+args[1]+".enderegg-teleport-disable", false);
 					configCreate("worlds."+args[1]+".place-message", "&cYou have insufficient permission to place that block.");
 					configCreate("worlds."+args[1]+".destroy-message", "&cYou have insufficient permission to destroy that block.");
-					configCreate("worlds."+args[1]+".only-oak-wood", false);
 					configCreate("worlds."+args[1]+".disable-water-physics", false);
 					configCreate("worlds."+args[1]+".disable-lava-physics", false);
+					configCreate("worlds."+args[1]+".disable-all-drops", false);
+					configCreate("worlds."+args[1]+".disable-all-pickup", false);
 					saveConfig();
 					reloadConfig();
 					sender.sendMessage(ChatColor.GREEN+"Configuration section successfully created!");
@@ -80,11 +84,18 @@ public class BlockControl extends JavaPlugin {
 				}
 				return true;
 			}
-			if(args.length == 1) {
+			else if(args.length == 1) {
 				if(args[0].equalsIgnoreCase("reload")) {
 					reloadConfig();
 					sender.sendMessage(ChatColor.GREEN+"BlockControl successfully reloaded!");
 				}
+				return true;
+			}
+			else if(args.length == 0) {
+				sender.sendMessage(ChatColor.GREEN+"BlockControl Help:");
+				sender.sendMessage(" - /blockcontrol create <world name> "+ChatColor.GREEN+": Creates a world section in the config file. " +
+						"Case sensitive, no spaces.");
+				sender.sendMessage(" - /blockcontrol reload "+ChatColor.GREEN+": Reloads the configuration file if you made changes.");
 				return true;
 			}
 		}

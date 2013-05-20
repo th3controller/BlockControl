@@ -15,6 +15,7 @@ public class UpdateCheck implements Runnable {
 		this.plugin = plugin;
 	}
 	
+	@Override
 	public void run(){
 		try {
 			URL url = new URL("http://dl.dropbox.com/u/34716611/Public%20Files/blockcontrol.properties");
