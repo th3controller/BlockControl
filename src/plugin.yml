@@ -1,5 +1,5 @@
 name: BlockControl
-version: 1.4.1
+version: 1.4.0
 main: us.th3controller.blockcontrol.BlockControl
 author: th3controller
 commands:
