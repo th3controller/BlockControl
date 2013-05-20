@@ -3,6 +3,7 @@ package us.th3controller.blockcontrol;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -17,6 +18,8 @@ public class BlockControl extends JavaPlugin {
 	Logger log = Logger.getLogger("Minecraft");
 	PluginDescriptionFile pdfile;
 	
+	public HashMap<String, String> settings = new HashMap<String, String>();
+	
 	/**
 	 * Shows a message in the console with a prefix tag
 	 * @param msg The message to be displayed on the console
@@ -28,6 +31,7 @@ public class BlockControl extends JavaPlugin {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new BlockControlListener(this), this);
 		pdfile = getDescription();
+		settings.put("version", pdfile.getVersion());
 		File file = new File("plugins/BlockControl", "config.yml");
 		if(!file.exists()) {
 			this.saveResource("config.yml", true);

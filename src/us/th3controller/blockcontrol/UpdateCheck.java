@@ -27,7 +27,7 @@ public class UpdateCheck implements Runnable {
 			
 			String line = input.readLine();
 			if (line != null) {
-				double currentVer = plugin.parseVersion(plugin.pdfile.getVersion());
+				double currentVer = plugin.parseVersion(plugin.settings.get("version"));
 				double newVer = plugin.parseVersion(line);
 				if (newVer > currentVer) {
 					plugin.log.info("[BlockControl] Latest version is available now on BukkitDev!");
@@ -40,7 +40,6 @@ public class UpdateCheck implements Runnable {
 			}
 			
 		} catch (IOException e) {
-			// Failed to check for updates :-(
 			plugin.log.warning("[BlockControl] Could not check for latest updates!");
 		}
 	}
